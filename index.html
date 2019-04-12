@@ -5,11 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>View Practice - Sock Store</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div class="nav-bar"></div>
     <div id="app">
-      <h1>{{ product }}</h1>
-      <p>{{ description }}</p>
+      <div class="product">
+        <div class="product-image">
+          <!-- v-bind -->
+          <!-- creates a bond between the data and attribute we want it to be bound to -->
+          <img v-bind:src="image" alt="Socks" />
+        </div>
+
+        <div class="product-info">
+          <h1>{{ product }}</h1>
+          <p>{{ description }}</p>
+          <p>
+            For more information, click
+            <a v-bind:href="link" target="_blank">here</a>.
+          </p>
+          <!-- <p v-show="inStock">Get it while you can</p> -->
+          <p v-if="inventory > 10">In Stock</p>
+          <!-- <p v-else-if="inventory <=10 && inventory > 0">Almost Out</p> -->
+          <p v-else>Out of Stock</p>
+          <!-- <span v-if="onSale">On Sale Now!</span> -->
+          <ul>
+            <li v-for="detail in details">{{ detail }}</li>
+          </ul>
+
+          <div v-for="variant in variants" v-bind:key="variant.variantId">
+            <p v-on:mouseover="updateProduct(variant.variantImage)">
+              {{ variant.variantColor }}
+            </p>
+            <ul>
+              <li v-for="size in sizes">{{ size }}</li>
+            </ul>
+          </div>
+
+          <button v-on:click="addToCart">Add to Cart</button>
+          <button v-on:click="removeFromCart">Remove Item</button>
+
+          <div class="cart">
+            <p>Cart({{ cart }})</p>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
   <!-- super -->
