@@ -10,57 +10,7 @@
   <body>
     <div class="nav-bar"></div>
     <div id="app">
-      <div class="product">
-        <div class="product-image">
-          <img v-bind:src="image" alt="Socks" />
-        </div>
-
-        <div class="product-info">
-          <!-- Computed properties -->
-          <h1>{{ title }}</h1>
-          <p>{{ description }}</p>
-          <p>
-            For more information, click
-            <a v-bind:href="link" target="_blank">here</a>.
-          </p>
-          <!-- <p v-show="inStock">Get it while you can</p> -->
-          <p v-if="inStock">In Stock</p>
-
-          <p class="saleItem">{{ onSale }}</p>
-
-          <!-- <p v-else-if="inventory <=10 && inventory > 0">Almost Out</p> -->
-          <p v-else :class="{ outOfStock: !inStock}">Out of Stock</p>
-          <!-- <span v-if="onSale">On Sale Now!</span> -->
-          <ul>
-            <li v-for="detail in details">{{ detail }}</li>
-          </ul>
-
-          <div
-            v-for="(variant, index) in variants"
-            v-bind:key="variant.variantId"
-            class="color-box"
-            v-bind:style="{backgroundColor: variant.variantColor}"
-            v-on:mouseover="updateProduct(index)"
-          >
-            <!-- <ul>
-              <li v-for="size in sizes">{{ size }}</li>
-            </ul> -->
-          </div>
-
-          <button
-            v-on:click="addToCart"
-            :disabled="!inStock"
-            :class="{ disabledButton: !inStock}"
-          >
-            Add to Cart
-          </button>
-          <button v-on:click="removeFromCart">Remove Item</button>
-
-          <div class="cart">
-            <p>Cart({{ cart }})</p>
-          </div>
-        </div>
-      </div>
+      <product :premium="premium"></product>
     </div>
   </body>
   <!-- super -->
