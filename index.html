@@ -10,14 +10,19 @@
   <body>
     <div class="nav-bar"></div>
     <div id="app">
-      <!-- add props as a custom attribute -->
-      <!-- passing premium in from our data  -->
-      <!-- and then binding to that data so if it changes it will also update -->
-      <product :premium="premium"></product>
+      <div class="cart">
+        <p>Cart({{ cart.length }})</p>
+      </div>
+      <product
+        :premium="premium"
+        v-on:add-to-cart="updateCart"
+        v-on:remove-from-cart="removeItem"
+      ></product>
     </div>
   </body>
   <!-- super -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script> -->
   <script src="main.js"></script>
 </html>

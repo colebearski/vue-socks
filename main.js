@@ -1,3 +1,91 @@
+// Product Review
+Vue.component("product-review", {
+  // Two way data binding with v-model
+  template: `
+  <form class="review-form" @submit.prevent="onSubmit">
+
+  <p v-if="errors.length">
+    <b>Please correct the following error(s):</b>
+    <ul>
+      <li v-for="error in errors">{{ error }}</li>
+    </ul>
+  </p>
+
+  <p>
+    <label for="name">Name:</label>
+    <input id="name" v-model="name">
+  </p>
+
+  <p>
+    <label for="review">Review:</label>
+    <textarea id="review" v-model="review"></textarea>
+  </p>
+
+  <p>Would you recommend this product?</p>
+
+  <label>
+    Yes
+    <input type="radio" value="Yes" v-model="recommend"/>
+  </label>
+
+  <label>
+    No
+    <input type="radio" value="No" v-model="recommend"/>
+  </label>
+
+  <p>
+    <label for="rating">Rating:</label>
+    <select id="rating" v-model.number="rating">
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+    </select>
+  </p>
+
+  <p>
+    <input type="submit" value="Submit">
+  </p>
+
+  </form>
+
+    `,
+
+  data() {
+    return {
+      name: null,
+      review: null,
+      rating: null,
+      recommend: null,
+      errors: []
+    };
+  },
+  methods: {
+    onSubmit() {
+      if (this.name && this.review && this.rating) {
+        let productReview = {
+          name: this.name,
+          review: this.review,
+          rating: this.rating,
+          recommend: this.recommend
+        };
+        this.$emit("review-submitted", productReview);
+        this.name = null;
+        this.review = null;
+        this.rating = null;
+        this.recommend = null;
+      } else {
+        if (!this.name) this.errors.push("Name required.");
+        if (!this.review) this.errors.push("Review required.");
+        if (!this.rating) this.errors.push("Rating required.");
+        if (!this.recommend) this.errors.push("Recommendation required.");
+      }
+    }
+  }
+});
+
+// Product Details
 Vue.component("product-details", {
   props: {
     details: {
@@ -11,6 +99,7 @@ Vue.component("product-details", {
 </ul>`
 });
 
+// Product
 Vue.component("product", {
   // receiving the premium props from data
   props: {
@@ -34,10 +123,10 @@ Vue.component("product", {
     </p>
     
     <p v-if="inStock">In Stock</p>
-
+    <p v-else :class="{ outOfStock: !inStock}">Out of Stock</p>
     <p class="saleItem">{{ onSale }}</p>
 
-    <p v-else :class="{ outOfStock: !inStock}">Out of Stock</p>
+    
     
     <p>Shipping: {{ shipping }}</p>
 
@@ -60,10 +149,23 @@ Vue.component("product", {
     </button>
     <button v-on:click="removeFromCart">Remove Item</button>
 
-    <div class="cart">
-      <p>Cart({{ cart }})</p>
-    </div>
   </div>
+
+  <div>
+      <h2>Reviews</h2>
+      <p v-if="!reviews.length">There are no reviews yet.</p>
+      <ul>
+       <li v-for="review in reviews">
+        <p>{{ review.name }}</p>
+        <p>Rating: {{ review.rating }}</p>
+        <p>{{ review.review }}</p>
+        <p>Recommend: {{ review.recommend }}</p>
+       </li>
+      </ul>
+  </div>
+
+  <product-review @review-submitted="addReview"></product-review>
+  
 </div>`,
 
   data() {
@@ -91,19 +193,28 @@ Vue.component("product", {
           onSale: false
         }
       ],
-      cart: 0
+      reviews: []
     };
   },
   methods: {
     addToCart: function() {
-      this.cart += 1;
+      // emitting an event
+      // passes data back to parent as 'add-to-cart'
+      this.$emit("add-to-cart", this.variants[this.selectedVariant].variantId);
     },
     removeFromCart: function() {
-      this.cart -= 1;
+      // passes data back to parent as 'remove from cart'
+      this.$emit(
+        "remove-from-cart",
+        this.variants[this.selectedVariant].variantId
+      );
     },
     updateProduct: function(index) {
       this.selectedVariant = index;
       console.log(index);
+    },
+    addReview(productReview) {
+      this.reviews.push(productReview);
     }
   },
   computed: {
@@ -136,6 +247,18 @@ const app = new Vue({
   el: "#app",
   // this data will get passed to our component as a prop
   data: {
-    premium: false
+    premium: false,
+    cart: []
+  },
+  methods: {
+    updateCart(id) {
+      this.cart.push(id);
+      console.log("Added", id);
+    },
+
+    removeItem(id) {
+      this.cart.pop(id);
+      console.log("Removed", id);
+    }
   }
 });
