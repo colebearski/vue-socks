@@ -12,13 +12,12 @@
     <div id="app">
       <div class="product">
         <div class="product-image">
-          <!-- v-bind -->
-          <!-- creates a bond between the data and attribute we want it to be bound to -->
           <img v-bind:src="image" alt="Socks" />
         </div>
 
         <div class="product-info">
-          <h1>{{ product }}</h1>
+          <!-- Computed properties -->
+          <h1>{{ title }}</h1>
           <p>{{ description }}</p>
           <p>
             For more information, click
@@ -26,6 +25,9 @@
           </p>
           <!-- <p v-show="inStock">Get it while you can</p> -->
           <p v-if="inStock">In Stock</p>
+
+          <p class="saleItem">{{ onSale }}</p>
+
           <!-- <p v-else-if="inventory <=10 && inventory > 0">Almost Out</p> -->
           <p v-else :class="{ outOfStock: !inStock}">Out of Stock</p>
           <!-- <span v-if="onSale">On Sale Now!</span> -->
@@ -34,11 +36,11 @@
           </ul>
 
           <div
-            v-for="variant in variants"
+            v-for="(variant, index) in variants"
             v-bind:key="variant.variantId"
             class="color-box"
             v-bind:style="{backgroundColor: variant.variantColor}"
-            v-on:mouseover="updateProduct(variant.variantImage)"
+            v-on:mouseover="updateProduct(index)"
           >
             <!-- <ul>
               <li v-for="size in sizes">{{ size }}</li>
