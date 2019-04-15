@@ -1,4 +1,18 @@
+Vue.component("product-details", {
+  props: {
+    details: {
+      type: Array,
+      required: true
+    }
+  },
+
+  template: ` <ul>
+  <li v-for="detail in details">{{ detail }}</li>
+</ul>`
+});
+
 Vue.component("product", {
+  // receiving the premium props from data
   props: {
     premium: {
       type: Boolean,
@@ -27,10 +41,7 @@ Vue.component("product", {
     
     <p>Shipping: {{ shipping }}</p>
 
-    <ul>
-      <li v-for="detail in details">{{ detail }}</li>
-    </ul>
-
+    <product-details :details="details"></product-details>
     <div
       v-for="(variant, index) in variants"
       v-bind:key="variant.variantId"
@@ -115,15 +126,15 @@ Vue.component("product", {
     shipping() {
       if (this.premium) {
         return "Free";
-      } else {
-        return "$2.99";
       }
+      return "$2.99";
     }
   }
 });
 
 const app = new Vue({
   el: "#app",
+  // this data will get passed to our component as a prop
   data: {
     premium: false
   }
